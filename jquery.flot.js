@@ -1177,6 +1177,7 @@
             });
             
             insertLegend();
+            insertYAxisHeading();
         }
         
         function setRange(axis) {
@@ -2307,6 +2308,45 @@
                     var div = legend.children();
                     $('<div style="position:absolute;width:' + div.width() + 'px;height:' + div.height() + 'px;' + pos +'background-color:' + c + ';"> </div>').prependTo(legend).css('opacity', options.legend.backgroundOpacity);
                 }
+            }
+        }
+
+        function insertYAxisHeading() {
+
+            placeholder.find(".yaxisheading").remove();
+
+            if (!options.legend.show)
+                return;
+
+            var fragments = [], entries = [], rowStarted = false,
+                lf = options.legend.labelFormatter, s, label;
+
+            fragments.push('<tr><td>' + options.yaxis.heading + '</td></tr>');
+
+            var table = '<table style="font-size:smaller;color:' + options.grid.color + '">' + fragments.join("") + '</table>',
+                pos = "",
+                m = options.legend.margin;
+
+            pos += 'top:' + (m[1] + plotOffset.top) + 'px;';
+            pos += 'left:' + (m[0] + plotOffset.left) + 'px;';
+
+            var legend = $('<div class="yaxisheading">' + table.replace('style="', 'style="position:absolute;' + pos +';') + '</div>').appendTo(placeholder);
+            if (options.legend.backgroundOpacity != 0.0) {
+                // put in the transparent background
+                // separately to avoid blended labels and
+                // label boxes
+                var c = options.legend.backgroundColor;
+                if (c == null) {
+                    c = options.grid.backgroundColor;
+                    if (c && typeof c == "string")
+                        c = $.color.parse(c);
+                    else
+                        c = $.color.extract(legend, 'background-color');
+                    c.a = 1;
+                    c = c.toString();
+                }
+                var div = legend.children();
+                $('<div style="position:absolute;width:' + div.width() + 'px;height:' + div.height() + 'px;' + pos +'background-color:' + c + ';"> </div>').prependTo(legend).css('opacity', options.legend.backgroundOpacity);
             }
         }
 
